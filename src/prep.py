@@ -7,9 +7,7 @@ non_bin=["BMI", "GenHlth", "MentHlth", "PhysHlth", "Age", "Education", "Income"]
 
 def load(filepath):
     if not os.path.exists(filepath):
-        print("Invalid path for the csv")
-        return None
-    print("aici")
+        raise Exception("Invalid csv path")
     return pd.read_csv(filepath)    
 
 # vreau sa dau 0/1 dupa mediana din coloana respectiva 
@@ -18,7 +16,10 @@ def to_bin(data):
     x=data.copy()
     for col in non_bin:
         thresh=x[col].median()
-        x[col]=(x[col]>=thresh).astype(int)
+        if thresh>0:
+            x[col]=(x[col]>=thresh).astype(int)
+        else:
+            x[col]=(x[col]>0).astype(int)
     return x.astype(int)
 
 def split_data(data, seed, res="Diabetes_binary", test_prc=0.2):
@@ -26,8 +27,8 @@ def split_data(data, seed, res="Diabetes_binary", test_prc=0.2):
     perm=np.random.permutation(len(data))
     test_cnt=int(len(data)*test_prc)
 
-    train_data=data.iloc[perm[:test_cnt]]
-    test_data=data.iloc[perm[test_cnt:]]
+    test_data=data.iloc[perm[:test_cnt]]
+    train_data=data.iloc[perm[test_cnt:]]
 
     not_res=[col for col in data.columns if col!=res]
 
@@ -40,5 +41,9 @@ def split_data(data, seed, res="Diabetes_binary", test_prc=0.2):
 
 
 def pre(seed, filepath="./data/diabetes_binary_5050split_health_indicators_BRFSS2015.csv", res="Diabetes_binary", test_prc=0.2):
-    data=load(filepath)
-    return split_data(data, seed, res, test_prc)
+    try:
+        data=load(filepath)
+        data=to_bin(data)
+        return split_data(data, seed, res, test_prc)
+    except Exception as e:
+        raise e
