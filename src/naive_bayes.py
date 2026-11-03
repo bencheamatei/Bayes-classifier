@@ -1,13 +1,13 @@
 import numpy as np
 
-class naive_bayes:
+# atunci cand calculam P(Xi = 0/1 | Y=0/1)
+# e posibil ca una dintre probabilitatile noastre sa dea 0
+# lucru care ar face intregul produs egal cu 0, ceea ce nu e bine
+# ca sa scap de chestia asta exista ceea ce se numeste laplace smoothing 
+# care in esenta imi ia x/y si il face (x+a)/(y+cnt*a), unde 
+# cnt vine nr de clase posibile din clasificare, deci in cazul meu fix 2 
 
-    # atunci cand calculam P(Xi = 0/1 | Y=0/1)
-    # e posibil ca una dintre probabilitatile noastre sa dea 0
-    # lucru care ar face intregul produs egal cu 0, ceea ce nu e bine
-    # ca sa scap de chestia asta exista ceea ce se numeste laplace smoothing 
-    # care in esenta imi ia x/y si il face (x+a)/(y+cnt*a), unde 
-    # cnt vine nr de clase posibile din clasificare, deci in cazul meu fix 2 
+class naive_bayes:
     def __init__(self, alf=1.0):
         self.alf=alf
         self.prior=None # aici o sa am sansele de diabet/non diabet initiale
