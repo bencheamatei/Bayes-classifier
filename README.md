@@ -29,16 +29,12 @@ Both models implement Laplace (additive) smoothing to prevent zero-probability e
    ```
    git clone https://github.com/bencheamatei/Bayes-classifier.git
    cd Bayes-classifier
-   
-   
    ```
 
 2. Install the required dependencies:
 
    ```
    pip install -r requirements.txt
-   
-   
    ```
 
 3. **Data Setup**: The required dataset is already included in the repository under the `data/` directory:
@@ -53,8 +49,6 @@ You can run the classifiers to see their training and testing accuracies. The sc
 
 ```
 python main.py [seed] [mx_par] [alpha]
-
-
 ```
 
 * `seed`: Random seed for data splitting (default: 12513).
@@ -67,8 +61,6 @@ python main.py [seed] [mx_par] [alpha]
 
 ```
 python main.py 42 4 1.0
-
-
 ```
 
 ### Running the Experiments (`exp.py`)
@@ -80,8 +72,6 @@ Runs the Non-Naive model for every possible number of parents (0 to 21) to show 
 
 ```
 python exp.py 1
-
-
 ```
 
 **2. Model Comparison:**
@@ -89,8 +79,6 @@ Compares the custom Bayes classifiers (with binarized data) against industry-sta
 
 ```
 python exp.py 2
-
-
 ```
 
 ## Results & Conclusions
