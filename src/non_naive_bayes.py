@@ -1,7 +1,7 @@
 import numpy as np 
 
 class non_naive_bayes:
-    def __init__(self, alf=1.0, corr=0.1, mx_par=1):
+    def __init__(self, alf=1.0, corr=0.01, mx_par=1):
         self.alf=alf
         self.corr=corr
         self.mx_par=mx_par  
@@ -29,25 +29,24 @@ class non_naive_bayes:
         self.calc_dependencies(x)
 
         self.ps=[[[{} for _ in range(m)] for _ in range(2)] for _ in range(2)]
+        y=y.astype(np.int64)
 
         for col in range(m):
+            k=len(self.dep[col])
+            code=np.zeros(n, dtype=np.int64)
+            for bit in range(k):
+                code|=x[:,self.dep[col][bit]].astype(np.int64)<<bit
+
+            aux=y*(1<<k)+code
+            tot=np.bincount(aux, minlength=2*(1<<k)).reshape(2, (1<<k))
+            cnt=np.bincount(aux[x[:,col]==1], minlength=2*(1<<k)).reshape(2, (1<<k))
+            p1=(cnt+self.alf)/(tot+2*self.alf)
+
             for rez in range(2):
-                for mask in range(1<<len(self.dep[col])):
-                    v=(y==rez)
-                    for bit in range(len(self.dep[col])):
-                        val=0
-                        if mask&(1<<bit):
-                            val=1
-                        v=v&(x[:,self.dep[col][bit]]==val)
-
-                    tot=np.sum(v)
-                    v=v&(x[:,col]==1)
-                    cnt=np.sum(v)
-
-                    self.ps[1][rez][col][mask]=(cnt+self.alf)/(tot+2*self.alf)
-                    self.ps[0][rez][col][mask]=1-self.ps[1][rez][col][mask]
-            
-        return self 
+                for mask in range(1<<k):
+                    self.ps[1][rez][col][mask]=p1[rez, mask]
+                    self.ps[0][rez][col][mask]=1-p1[rez, mask]
+        return self
 
     def calc_logs(self, x):
         s=[np.log(self.prior[0]), np.log(self.prior[1])]
