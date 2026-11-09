@@ -12,15 +12,18 @@ def load(filepath):
 
 # vreau sa dau 0/1 dupa mediana din coloana respectiva 
 # asta ramana up for testing totusi ca nu stiu daca e optim asa
-def to_bin(data):
-    x=data.copy()
+def to_bin(tr_data, te_data):
+    tr=tr_data.copy()
+    te=te_data.copy()
     for col in non_bin:
-        thresh=x[col].median()
+        thresh=tr[col].median()
         if thresh>0:
-            x[col]=(x[col]>=thresh).astype(int)
+            tr[col]=(tr[col]>=thresh).astype(int)
+            te[col]=(te[col]>=thresh).astype(int)
         else:
-            x[col]=(x[col]>0).astype(int)
-    return x.astype(int)
+            tr[col]=(tr[col]>0).astype(int)
+            te[col]=(te[col]>0).astype(int)
+    return tr.astype(int), te.astype(int)
 
 def split_data(data, seed, res="Diabetes_binary", test_prc=0.2):
     np.random.seed(seed)
@@ -29,6 +32,8 @@ def split_data(data, seed, res="Diabetes_binary", test_prc=0.2):
 
     test_data=data.iloc[perm[:test_cnt]]
     train_data=data.iloc[perm[test_cnt:]]
+
+    train_data, test_data=to_bin(train_data, test_data)
 
     not_res=[col for col in data.columns if col!=res]
 
@@ -43,7 +48,6 @@ def split_data(data, seed, res="Diabetes_binary", test_prc=0.2):
 def pre(seed, filepath="./data/diabetes_binary_5050split_health_indicators_BRFSS2015.csv", res="Diabetes_binary", test_prc=0.2):
     try:
         data=load(filepath)
-        data=to_bin(data)
         return split_data(data, seed, res, test_prc)
     except Exception as e:
         raise e
