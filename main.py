@@ -39,14 +39,10 @@ def main():
 
         print("Training accuracy: ")
 
-        nb=naive_bayes(alf=alf)
-        nb.fit(d_tr, res_tr)
         ans=nb.predict(d_tr)
         ok=np.mean(ans==res_tr)
         print(f"Naive Bayes: {100.0*ok}%")
 
-        nnb=non_naive_bayes(alf=alf, mx_par=parr)
-        nnb.fit(d_tr, res_tr)
         ans_nnb=nnb.predict(d_tr)
         ok_nnb=np.mean(ans_nnb==res_tr)
         print(f"Non-naive Bayes with mx_par={parr}: {100.0*ok_nnb}%")
